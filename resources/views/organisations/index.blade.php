@@ -38,7 +38,7 @@
               <div id="category_list-{{$org->id}}">
                 @foreach($org->categories as $cat)
                 <a href="{{ route('organisations', ['cat_ids' => [...$categories_id, $cat->id]]) }}"
-                  class="btn btn-primary rounded-end mb-1">
+                  class="btn btn-primary rounded-end mb-1 mt-5">
                   {{$cat->name}}
                 </a>
                 @endforeach
