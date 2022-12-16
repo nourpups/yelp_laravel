@@ -13,10 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+      Schema::create('comments', function (Blueprint $table) {
+        $table->id();
+
+        $table->float('rate')->default(0);
+        $table->string('username');
+        $table->string('text');
+
+        $table->unsignedBigInteger('organisation_id');
+        $table->foreign('organisation_id')->references('id')->on('organisations');
+
+        $table->unsignedBigInteger('user_id')->nullable();
+        $table->foreign('user_id')->references('id')->on('users');
+
+        $table->unsignedBigInteger('parent_comment_id')->nullable();
+        $table->foreign('parent_comment_id')->references('id')->on('comments');
+
+
+        $table->timestamps();
+      });
     }
 
     /**

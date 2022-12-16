@@ -26,6 +26,7 @@
         </tr>
       </thead>
       <tbody>
+
         @foreach ($organisations as $org)
         <tr>
           <td class="text-center">{{ $org->id }}</td>
@@ -37,8 +38,8 @@
             <div class="p-3">
               <div id="category_list-{{$org->id}}">
                 @foreach($org->categories as $cat)
-                <a href="{{ route('organisations', ['cat_ids' => [...$categories_id, $cat->id]]) }}"
-                  class="btn btn-primary rounded-end mb-1 mt-5">
+                <a href="{{ route('organisation.index', ['cat_ids' => [...$categories_id, $cat->id]]) }}"
+                  class="btn btn-primary rounded-end mb-1">
                   {{$cat->name}}
                 </a>
                 @endforeach
@@ -82,6 +83,7 @@
 </div>
 <!-- END Dynamic Table Full -->
 @endsection
+
 @section('modals')
 @foreach ($organisations as $org)
 @include('organisations.modals.store')
@@ -89,4 +91,25 @@
 @include('organisations.modals.attach_category',['id' => $org->id, 'categories' => $categories])
 @include('organisations.modals.delete',['id' => $org->id])
 @endforeach
+@endsection
+
+@section('js')
+  <script>
+    $('.add_category').click(function(){
+      let url = '{{route("organisation.api.add_category") }}';
+      let url_cat = '{{ route("organisation.index")}}';
+      let organisation_id = $(this).attr('organisation_id');
+      let category_name = $('#add_category'+organisation_id).val()
+      $.post(url,
+      {
+        organisation_id: organisation_id,
+        category_name: category_name
+      },
+      function(data,status) {
+        let html = '<a href="'+url_cat+'" class="btn btn-primary rounded-end mb-1 mr-1">'+category_name+'</a>';
+        $('#category_list-'+organisation_id).append(html);
+        $('#add_category'+organisation_id).val('');
+      })
+    });
+  </script>
 @endsection
