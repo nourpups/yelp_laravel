@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class OrganisationController extends Controller
       $q->whereHas('categories', function ($query) {
         $query->whereIn('id', request('cat_ids'));
       });
-    })->with('categories');
+    })->with('categories')->get();
 
     return view('organisations.index')
     ->with('categories',$categories)
@@ -81,12 +82,33 @@ class OrganisationController extends Controller
     $organisation_id = request('organisation_id');
     $category = Category::firstOrCreate(['name' => $category_name]);
     $organisation = Organisation::with('categories')->findOrFail($organisation_id);
-    $cats_ids = $organisation->categories->map(fn(Category $cat) => $cat_id)->toArray();
+    $cats_ids = $organisation->categories->pluck('id')->toArray();
     $cats_ids[] = $category->id;
-    if($organisation->categories->sync($cats_ids))
+    if($organisation->categories()->sync($cats_ids))
     {
       return ['message' => 'Category added succesfully'];
     }
     return ['message' => 'Failed to add category'];
+  }
+  public function add_comment(Request $request)
+  {
+    $rate = ceil(request('rate'));
+    if($rate > 5) {
+      $rate = 5;
+    }
+    $comment = Comment::create([
+      'text' => request('text'),
+      'username' => request('username'),
+      'rate' => $rate,
+      'user_id' => request('user_id'),
+      'organisation_id' => request('organisation_id'),
+      'parent_comment_id' => request('parent_comment_id')
+    ]);
+    if(!empty($comment))
+    {
+      $rendered = view('organisations.components.comment', ['comment'=>$comment])->render();
+      return ['message' => 'Comment successfully created', 'html' => $rendered];
+    }
+    return ['message' => 'Failed to create comment'];
   }
 }
