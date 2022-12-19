@@ -20,8 +20,12 @@ class FrontController extends Controller
      'categories' => $categories
     ]);
     }
-    public function page_organisation($id) {
-    $organisation = Organisation::with(['categories', 'root_comments'])->find($id);
-    return view('organisations.app_page', ['organisation' => $organisation,]);
+    public function page_organisation($id)
+    {
+        $organisation = Organisation::with(['categories', 'comments', 'suggestion_comments'])->find($id);
+        return view('organisations.app_page', [
+            'organisation' => $organisation,
+        ]);
     }
+
 }

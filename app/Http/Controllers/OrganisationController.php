@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Organisation\AddCommentRequest;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Organisation;
+use App\Services\Organisation\OrganisationService;
 use Illuminate\Http\Request;
 
 class OrganisationController extends Controller
@@ -90,25 +92,30 @@ class OrganisationController extends Controller
     }
     return ['message' => 'Failed to add category'];
   }
-  public function add_comment(Request $request)
-  {
-    $rate = ceil(request('rate'));
-    if($rate > 5) {
-      $rate = 5;
-    }
-    $comment = Comment::create([
-      'text' => request('text'),
-      'username' => request('username'),
-      'rate' => $rate,
-      'user_id' => request('user_id'),
-      'organisation_id' => request('organisation_id'),
-      'parent_comment_id' => request('parent_comment_id')
-    ]);
-    if(!empty($comment))
-    {
-      $rendered = view('organisations.components.comment', ['comment'=>$comment])->render();
-      return ['message' => 'Comment successfully created', 'html' => $rendered];
-    }
-    return ['message' => 'Failed to create comment'];
-  }
+  public function add_comment(AddCommentRequest $request)
+   {
+       $service = new OrganisationService(request('organisation_id'));
+       $comment = $service->add_comment(
+           text: request('text'),
+           username: request('username'),
+           rate: request('rate'),
+           parent_comment_id: request('parent_comment_id')
+       );
+
+       if(!empty($comment))
+       {
+           $rendered = view('organisations.components.comment', ['comment'=> $comment])->render();
+           return ['message'=> 'success', 'html' => $rendered];
+       }
+       return ['message'=> 'failed'];
+   }
+   public function api_organisations(Request $request)
+   {
+        $organisation = Organisation::ApiFilter()->get();
+        return response()->json([
+            'message' => 'success',
+            'data' => $organisation,
+        ]);
+   }
+
 }

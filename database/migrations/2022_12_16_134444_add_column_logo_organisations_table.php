@@ -13,16 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('organisations', function (Blueprint $table) {
+            $table->string('logo')->nullable()->after('description');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        //
+        Schema::table('organisations', function (Blueprint $table) {
+            $table->dropColumn('logo');
+        });
+
     }
 };

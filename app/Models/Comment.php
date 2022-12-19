@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+class Comment extends Model implements HasMedia
 
-class Comment extends Model
 {
-  use HasFactory;
+  use HasFactory,InteractsWithMedia;
   protected $table = 'comments';
 
   protected $fillable = [

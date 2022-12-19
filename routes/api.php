@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('organisatio/attach_category', [OrganisationController::class, 'attach_category_api'])->name('organisation.api.add_category');
-
+Route::get('open/organisations, ', [OrganisationController::class, 'api_organisations']);

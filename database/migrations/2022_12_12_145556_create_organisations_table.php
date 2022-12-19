@@ -23,11 +23,6 @@ Schema::create('organisations', function (Blueprint $table) {
   $table->string('head_person_name')->nullable();
   $table->timestamps();
 });
-Schema::create('categories', function (Blueprint $table) {
-  $table->id();
-  $table->string('name')->nullable();
-  $table->timestamps();
-});
     }
 
     /**

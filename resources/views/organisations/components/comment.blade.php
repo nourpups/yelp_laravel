@@ -24,3 +24,4 @@
         <a href="#" class="reply" comment_id="{{$comment->id}}"><span class="text-theme">Reply</span></a>
     </div>
 </div>
+{!! $comment->text !!}
