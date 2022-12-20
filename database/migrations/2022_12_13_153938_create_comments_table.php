@@ -18,7 +18,7 @@ return new class extends Migration
 
         $table->float('rate')->default(0);
         $table->string('username');
-        $table->text('text');
+        $table->text('text')->nullable();
 
         $table->unsignedBigInteger('organisation_id');
         $table->foreign('organisation_id')->references('id')->on('organisations');

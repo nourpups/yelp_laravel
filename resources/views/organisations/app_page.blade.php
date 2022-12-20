@@ -3,61 +3,62 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/css/summernote-bs4.css') }}">
 @endsection
-
 @section('js')
     <!-- Text Editor Js-->
     <script src="{{ asset('assets/plugins/summernote/js/summernote-bs4.js') }}"></script>
 
     <script>
         // Text Editor
-
         $('.text-editor').summernote({
             height: 140, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
             focus: false // set focus to editable area after initializing summernote
         });
-        function drop_reply_data(){
+        $('a.open_comment').click(function(){
+            $('a[href="#product-comments"]').click();
+
+            
+        })
+        function drop_reply_data() {
             $('#comment_reply_id').val('');
             $('.replay-div').hide();
             $('#comment_reply_a').attr('href', '')
             $('#commpent_reply_username').val('');
             $('#reply_time').val('');
             $('#reply_text').val('');
+            $('.text-editor').summernote('code', '');
         }
         drop_reply_data();
-        $('.cancel_reply').click(function(){
+        $('.cancel_reply').click(function() {
             drop_reply_data();
         })
-        $('.reply').click(function(){
+        $('.reply').click(function() {
             $('html, body').animate({
                 scrollTop: $("#leave_comment").offset().top - 150
             }, 100);
             let organisation_id = $(this).attr('comment_id');
             $('#comment_reply_id').val(organisation_id);
             $('.replay-div').show();
-            $('#comment_reply_a').attr('href', '#comment_'+organisation_id)
-            $('#commpent_reply_username').html($('#comment_username_'+organisation_id).html())
-            $('#reply_time').html($('#comment_time_'+organisation_id).html())
-            let text = $('#comment_text_'+organisation_id).text();
+            $('#comment_reply_a').attr('href', '#comment_' + organisation_id)
+            $('#commpent_reply_username').html($('#comment_username_' + organisation_id).html())
+            $('#reply_time').html($('#comment_time_' + organisation_id).html())
+            let text = $('#comment_text_' + organisation_id).text();
             $('#reply_text').html(text.slice(0, 30) + '...')
         });
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
         });
-        $('#comment_organisation').click(function(){
-            let url = '{{ route('app.organisations.comment', ['id' => $organisation->id]) }}';
+        $('#comment_organisation').click(function() {
+            let url = "{{ route('app.organisations.comment', ['id' => $organisation->id]) }}";
             let organisation_id = '{{ $organisation->id }}';
             let username = $('#comment_username').val();
             let text = $('#comment_text').val();
             let parent_comment_id = $('#comment_reply_id').val();
             let comment_rate = $('#comment_rate').val();
-
-            $.post(url,
-                {
+            $.post(url, {
                     organisation_id: organisation_id,
                     username: username,
                     text: text,
@@ -65,21 +66,15 @@
                     rate: comment_rate,
                 },
                 function(data, status) {
-                    if(data.message === "success")
+                    if (data.message === "success")
                         $('#comments').append(data.html);
                     $('#comment_username').val('');
                     $('#comment_text').val('');
                     $('#comment_reply_id').val('')
                     $('#comment_rate').val('')
                     drop_reply_data();
-
                 });
         });
-        $('a.open_comment').click(function(){
-            $('a[href="#product-comments"]').click();
-            $(this).click();
-        })
-
     </script>
 @endsection
 
