@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS 'dcamp';
+
+CREATE DATABASE 'dcamp';
